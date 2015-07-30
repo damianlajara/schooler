@@ -1,8 +1,4 @@
----
-tags: cli, oo, full-application, project, oop
-language: ruby
-resources: 2
----
+
 
 # Project Week 1
 
