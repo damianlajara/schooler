@@ -1,4 +1,4 @@
-class ExampleModel
+class School
 
   attr_reader :example
 
