@@ -1,9 +1,8 @@
 class School
+  attr_reader :name
 
-  attr_reader :example
-
-  def initialize(example)
-    @example = example
+  def initialize(name)
+    @name = name
   end
 
 end

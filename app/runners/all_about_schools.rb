@@ -26,23 +26,22 @@ class AllAboutSchools
     run
   end
 
-  def display(array)
-    array.each.with_index {|element,index| puts "#{index.next}. #{element}"}
+  def display(school)
+    school.each.with_index {|school,index| puts "#{index.next}. #{school.name}"}
   end
 
   def process_cuny_schools
     url = "http://www2.cuny.edu/about/colleges-schools/"
-    schools = SchoolScraper.new(url).filter_schools
+    schools = SchoolScraper.new(url: url, type: "cuny").filter_schools
     puts "Found your cuny schools!"
     display schools
   end
 
   def process_suny_schools
     url = "http://www.suny.edu/attend/visit-us/complete-campus-list/"
-    schools = SchoolScraper.new(url).filter_schools
+    schools = SchoolScraper.new(url: url, type: "suny").filter_schools
     puts "Found your suny schools!"
     display schools
-    
   end
 
   def help
