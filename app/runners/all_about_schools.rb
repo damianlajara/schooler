@@ -31,14 +31,14 @@ class AllAboutSchools
   end
 
   def process_cuny_schools
-    url = "https://twitter.com/search?q=#{search_term}&src=typd&f=realtime"
+    url = "http://www2.cuny.edu/about/colleges-schools/"
     schools = SchoolScraper.new(url).filter_schools
     puts "Found your cuny schools!"
     display schools
   end
 
   def process_suny_schools
-    url = "https://twitter.com/search?q=#{search_term}&src=typd&f=realtime"
+    url = "http://www.suny.edu/attend/visit-us/complete-campus-list/"
     schools = SchoolScraper.new(url).filter_schools
     puts "Found your suny schools!"
     display schools
