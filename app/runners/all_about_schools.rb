@@ -42,6 +42,7 @@ class AllAboutSchools
     schools = SchoolScraper.new(url).filter_schools
     puts "Found your suny schools!"
     display schools
+    
   end
 
   def help

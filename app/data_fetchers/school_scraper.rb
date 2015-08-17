@@ -1,17 +1,18 @@
 class SchoolScraper
 
-  attr_reader :html
+  attr_reader :html#, :suny, :cuny
 
   def initialize(url)
     @html = Nokogiri::HTML(open(url))
   end
 
   def filter_schools
+    array = []
     puts "Searching schools..."
-    # tweets = html.search("p.tweet-text").collect { |p| p.text }
-    # tweets.each_with_object([]) do |tweet, result|
-    #   result << School.new(tweet)
-    # end
+    @html.css(".module.purple.page-callout.right ~ table tr td:nth-child(2) a").each do |link|
+      array << link.text  
+    end
+    array
   end
 
 end
