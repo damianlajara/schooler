@@ -1,3 +1,4 @@
+require "pry"
 class SchoolScraper
 
   attr_reader :html, :type
@@ -12,8 +13,29 @@ class SchoolScraper
     array = []
     puts "Searching schools..."
     if @type == "cuny"
-      @html.css("div.wpb_wrapper p a").each do |title|
-        array << School.new(title.text)
+      @html.css("div.wpb_column.vc_column_container.vc_col-sm-4 div.wpb_wrapper p").each_with_index do |paragraph, index|
+        #paragraph => "Baruch College\nOne Bernard Baruch Way\nNew York, NY 10010-5585"
+        info = paragraph.text.split(/\n/)
+        cuny_school = School.new(info.shift)
+        cuny_school.address = info.join " "
+        link = paragraph.css("a")
+        url = link.attribute("href").value
+        # There is a special case where the cuny school of public health site: "http://www2.cuny.edu/about/colleges-schools/cuny-school-of-public-health/"
+        # simply redirects you to the original site http://sph.cuny.edu/, so no need to scrape it again
+        # Keep in mind though, that since it has multiple campuses, there will be no campus view for sph
+
+        # TODO Refactor this
+        if index == 15
+          cuny_school.website = url
+          cuny_school.campusview = nil
+          array << cuny_school
+          next
+        end
+
+        new_site = Nokogiri::HTML(open(url))
+        cuny_school.website = new_site.at_css("div.wpb_wrapper a:nth-child(3)").attribute("href").value
+        cuny_school.campusview = new_site.at_css("div.wpb_wrapper p a").attribute("href").value
+        array << cuny_school
       end
     elsif @type == "suny"
       @html.css(".module.purple.page-callout.right ~ table tr td:nth-child(2) a").each do |link|
@@ -22,7 +44,7 @@ class SchoolScraper
     else
       raise StandardError.new("Woah! Wrong school type entered")
     end
+    binding.pry
     array
   end
-
 end
