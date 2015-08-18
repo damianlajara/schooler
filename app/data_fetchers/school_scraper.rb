@@ -39,12 +39,19 @@ class SchoolScraper
       end
     elsif @type == "suny"
       @html.css(".module.purple.page-callout.right ~ table tr td:nth-child(2) a").each do |link|
-        array << School.new(link.text)
+        suny_school = School.new(link.text)
+        link.attribute("href").value
+        new_site = Nokogiri::HTML(open("#{AllAboutSchools::SUNY_BASE_URL}#{link.attribute("href").value}"))
+        info = new_site.css("div.module.location.blue p").children.map{|x| x.content }.reject {|h| h == ""}
+        suny_school.address = info.shift(2).join(" ")
+        suny_school.phone_number = info.first
+        suny_school.website = info.last
+        suny_school.campusview = new_site.at_css("div.module.location.blue a").attribute("href").value
+        array << suny_school
       end
     else
       raise StandardError.new("Woah! Wrong school type entered")
     end
-    binding.pry
     array
   end
 end

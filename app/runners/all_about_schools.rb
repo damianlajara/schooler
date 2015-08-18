@@ -1,7 +1,9 @@
 class AllAboutSchools
+  SUNY_BASE_URL = "http://www.suny.edu"
 
   def call
-    puts "Welcome, what type of schools would you like to search through? (C)UNY or (S)UNY"
+    puts "*****Welcome to EyeSpy V1.0 Campus Edition!*****"
+    help
     run
   end
 
@@ -10,7 +12,7 @@ class AllAboutSchools
   end
 
   def run
-    print "School type: "
+    print "Awaiting Input: "
     input = get_user_input.downcase
     if input == "help"
       help
@@ -27,7 +29,7 @@ class AllAboutSchools
   end
 
   def display(school)
-    school.each.with_index {|school,index| puts "#{index.next}. #{school.name}"}
+    school.each.with_index {|school,index| puts "#{index.next}. #{school.name}\n    #{school.address}\n    #{school.phone_number}\n    #{school.website}"}
   end
 
   def process_cuny_schools
@@ -35,13 +37,34 @@ class AllAboutSchools
     schools = SchoolScraper.new(url: url, type: "cuny").filter_schools
     puts "Found your cuny schools!"
     display schools
+    view_map_selector schools
   end
 
   def process_suny_schools
-    url = "http://www.suny.edu/attend/visit-us/complete-campus-list/"
+    url = "#{SUNY_BASE_URL}/attend/visit-us/complete-campus-list/"
     schools = SchoolScraper.new(url: url, type: "suny").filter_schools
     puts "Found your suny schools!"
     display schools
+    view_map_selector schools
+  end
+
+  def view_map_selector(schools)
+    print "Would you like to see a school? (Y)es or (N)o: "
+    input = get_user_input.downcase
+      if input == "y" || input == "yes"
+        print "Select a number: "
+        number = get_user_input.to_i
+        open_campus_view schools[number.pred]
+      elsif input == "n" || input == "no"
+        puts "Aww man. The campus viewer is pretty cool!"
+        return
+      else
+        raise StandardError.new("Error! Invalid input. Please choose either (y)es or (n)o")
+      end
+  end
+
+  def open_campus_view(school)
+    %x'open "#{school.campusview}"'
   end
 
   def help
