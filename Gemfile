@@ -5,6 +5,7 @@ gem "nokogiri"
 group "development" do
   gem "pry"
   gem "pry-nav"
+  gem "ruby-progressbar"
 end
 
 group "test" do
