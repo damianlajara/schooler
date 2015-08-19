@@ -2,7 +2,7 @@ class AllAboutSchools
   SUNY_BASE_URL = "http://www.suny.edu"
 
   def call
-    puts "*****Welcome to EyeSpy V1.0 Campus Edition!*****"
+    puts "*~*~* Welcome to EyeSpy V1.0 Campus Edition! *~*~*"
     help
     run
   end
@@ -31,18 +31,33 @@ class AllAboutSchools
   def display(school)
     school.each.with_index {|school,index| puts "#{index.next}. #{school.name}\n    #{school.address}\n    #{school.phone_number}\n    #{school.website}"}
   end
+  #File.open("../lib/school_info.json", 'w') {|f| f.write(JSON.parse(hash)) }
+
+  # if File.exist?("../temp.json")
+  #   @array << JSON.parse(File.read("../lib/school_info.json"))
+  # else
+  # 		File.write("../lib/school_info.json", @array.to_json)
+  # end
 
   def process_cuny_schools
+    cuny_saved = File.exist?("app/lib/cuny_school_info.json")
     url = "http://www2.cuny.edu/about/colleges-schools/"
-    schools = SchoolScraper.new(url: url, type: "cuny").filter_schools
+    school_scraper = SchoolScraper.new(url: url, type: "cuny")
+    schools = parse_schools(school_scraper, cuny_saved)
     puts "Found your cuny schools!"
     display schools
     view_map_selector schools
   end
 
+  def parse_schools(schools, saved)
+    saved ? schools.read_file : schools.filter_schools
+  end
+
   def process_suny_schools
+    suny_saved = File.exist?("app/lib/suny_school_info.json") ? true : false
     url = "#{SUNY_BASE_URL}/attend/visit-us/complete-campus-list/"
-    schools = SchoolScraper.new(url: url, type: "suny").filter_schools
+    school_scraper = SchoolScraper.new(url: url, type: "suny")
+    schools = parse_schools(school_scraper, suny_saved)
     puts "Found your suny schools!"
     display schools
     view_map_selector schools
