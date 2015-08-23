@@ -77,10 +77,7 @@ class SchoolScraper
         #binding.pry
         cuny_school.phone_number = new_site.css(".vc_col-sm-8 .vc_align_left+ .box-white p").text.scan(/Phone: (.+\b)/).join
         cuny_school.address = info.join " "
-        school_hash[cuny_school.name][:website] = cuny_school.website
-        school_hash[cuny_school.name][:campusview] = cuny_school.campusview
-        school_hash[cuny_school.name][:phone_number] = cuny_school.phone_number
-        school_hash[cuny_school.name][:address] = cuny_school.address
+        add_school(cuny_school, school_hash)
         array << cuny_school
         progress.increment
       end
@@ -97,11 +94,7 @@ class SchoolScraper
         suny_school.phone_number = info.first
         suny_school.website = info.last
         suny_school.campusview = new_site.at_css("div.module.location.blue a").attribute("href").value
-        school_hash[suny_school.name] = {}
-        school_hash[suny_school.name][:website] = suny_school.website
-        school_hash[suny_school.name][:campusview] = suny_school.campusview
-        school_hash[suny_school.name][:phone_number] = suny_school.phone_number
-        school_hash[suny_school.name][:address] = suny_school.address
+        add_school(suny_school, school_hash)
         array << suny_school
         progress.increment
       end
@@ -112,5 +105,11 @@ class SchoolScraper
     end
     puts array.count
     array
+  end
+  def add_school(school, school_hash)
+    school_hash[school.name][:website] = school.website
+    school_hash[school.name][:campusview] = school.campusview
+    school_hash[school.name][:phone_number] = school.phone_number
+    school_hash[school.name][:address] = school.address
   end
 end
